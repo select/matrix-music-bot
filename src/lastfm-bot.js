@@ -17,13 +17,21 @@ matrixClient.loginWithPassword(matrixLogin.userId, matrixLogin.pass).then((crede
 	});
 	client.on('Room.timeline', (event, room, toStartOfTimeline) => {
 		const message = event.event.content.body;
+		// console.log('event: ',event)
 		if (artistRexEx.test(message)) {
 			const match = artistRexEx.exec(message);
 			if (match) {
 				fetch(`http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${match[1]}&api_key=${lastFmAPIkey}&format=json`)
 					.then(res => res.json())
 					.then((data) => {
-						console.log('info: ', data.artist.bio.summary);
+						client.sendHtmlMessage(
+							event.event.room_id,
+							data.artist.bio.summary,
+							data.artist.bio.summary,
+							() => {
+								console.log('###send: ', data.artist.bio.summary);
+							}
+						);
 					});
 			}
 		} else {

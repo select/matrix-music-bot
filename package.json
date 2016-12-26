@@ -8,7 +8,8 @@
   "dependencies": {
     "cli-color": "^1.1.0",
     "matrix-js-sdk": "^0.7.2",
-    "musicbrainz": "^0.2.6"
+    "musicbrainz": "^0.2.6",
+    "node-fetch": "^1.6.3"
   },
   "devDependencies": {
     "autoprefixer": "^6.6.0",
