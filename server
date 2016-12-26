@@ -1,0 +1,44 @@
+#!/usr/bin/env node
+
+const WebpackDevServer = require('webpack-dev-server');
+const webpack = require('webpack');
+const CircularDependencyPlugin = require('circular-dependency-plugin');
+
+const config = require('./config/webpack.dev.js');
+
+config.entry = [
+	'webpack-dev-server/client?http://localhost:8080/',
+	'webpack/hot/dev-server',
+	'./src/simple-client.js',
+];
+
+config.output = {
+	path: '/build',
+	publicPath: '/',
+	filename: 'simple-client.js',
+};
+
+config.plugins = [
+	new webpack.DefinePlugin({
+		'process.env': {
+			website: true,
+		},
+	}),
+	new CircularDependencyPlugin(),
+	new webpack.HotModuleReplacementPlugin(),
+];
+
+new WebpackDevServer(webpack(config), {
+	contentBase: './src/static/',
+	publicPath: config.output.publicPath,
+	historyApiFallback: false,
+	stats: {
+		colors: true,
+		chunks: false,
+	},
+	hot: true,
+	inline: true,
+}).listen(8080, 'localhost', function(err, res) {
+	if (err) console.warn(err);
+	console.log('Listening on localhost:8080');
+});
